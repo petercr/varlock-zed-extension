@@ -1,0 +1,19 @@
+id = "varlock-schema"
+name = "Varlock Schema"
+version = "0.1.2"
+schema_version = 1
+authors = ["dmno-dev", "Codex"]
+description = "Varlock @env-spec language support for .env.schema files"
+repository = "https://github.com/petercr/varlock-zed-extension"
+
+[grammars.env]
+repository = "https://github.com/zarifpour/tree-sitter-dotenv"
+commit = "a854096808a5c1da0de998b31e5887995a98a89f"
+
+[language_servers.varlock-schema-language-server]
+language = "env"
+name = "Varlock Schema LSP"
+languages = ["env"]
+
+[language_servers.varlock-schema-language-server.language_ids]
+"env" = "env-spec"
