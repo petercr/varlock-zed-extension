@@ -40,6 +40,7 @@ import {
   ROOT_DECORATORS,
   type ResolverInfo,
 } from './intellisense-catalog';
+import { createSemanticTokens, SEMANTIC_TOKENS_LEGEND } from './semantic-tokens';
 
 const LANG_ID = 'env-spec';
 const ENV_KEY_PATTERN = /^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=/;
@@ -85,6 +86,10 @@ connection.onInitialize(() => ({
       resolveProvider: false,
     },
     hoverProvider: true,
+    semanticTokensProvider: {
+      legend: SEMANTIC_TOKENS_LEGEND,
+      full: true,
+    },
   },
 }));
 
@@ -200,6 +205,11 @@ connection.onHover((params): Hover | undefined => {
       value: `${decorator.summary}\n\n${decorator.documentation}`,
     },
   };
+});
+
+connection.languages.semanticTokens.on((params) => {
+  const document = getDocument(params.textDocument.uri);
+  return createSemanticTokens(document ? getLines(document) : []);
 });
 
 connection.listen();

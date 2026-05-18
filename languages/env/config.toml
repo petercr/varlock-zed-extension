@@ -1,10 +1,6 @@
-name = "env"
+name = "Varlock Schema"
 grammar = "env"
-path_suffixes = [
-    "schema",
-    "env.schema",
-    ".env.schema",
-]
+path_suffixes = ["env.schema"]
 first_line_pattern = "^\\s*(?:#\\s*@|[A-Za-z_][A-Za-z0-9_.-]*\\s*=)"
 autoclose_before = ";:.,=}])>`"
 line_comments = ["# "]

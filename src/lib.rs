@@ -1,13 +1,16 @@
 use std::{env, fs};
 use zed_extension_api::{
-    self as zed, DownloadedFileType, GithubReleaseOptions, LanguageServerId,
-    LanguageServerInstallationStatus, Result,
+    self as zed, DownloadedFileType, LanguageServerId, LanguageServerInstallationStatus, Result,
 };
 
 /// GitHub repo that hosts the bundled language-server release asset.
 const GITHUB_REPO: &str = "petercr/varlock-zed-extension";
+/// Release tag that contains the bundled language-server asset for this extension version.
+const RELEASE_TAG: &str = "v0.1.3";
 /// Name of the release asset (a single, dependency-free CJS bundle).
 const ASSET_NAME: &str = "env-spec-language-server.js";
+/// Local development build, used when this folder is installed as a dev extension.
+const LOCAL_SERVER_PATH: &str = "server/out/server.js";
 
 struct EnvSpecExtension {
     cached_server_path: Option<String>,
@@ -15,6 +18,10 @@ struct EnvSpecExtension {
 
 impl EnvSpecExtension {
     fn server_script_path(&mut self, language_server_id: &LanguageServerId) -> Result<String> {
+        if fs::metadata(LOCAL_SERVER_PATH).map_or(false, |stat| stat.is_file()) {
+            return Ok(LOCAL_SERVER_PATH.to_string());
+        }
+
         if let Some(path) = &self.cached_server_path {
             if fs::metadata(path).map_or(false, |stat| stat.is_file()) {
                 return Ok(path.clone());
@@ -26,13 +33,7 @@ impl EnvSpecExtension {
             &LanguageServerInstallationStatus::CheckingForUpdate,
         );
 
-        let release = zed::latest_github_release(
-            GITHUB_REPO,
-            GithubReleaseOptions {
-                require_assets: true,
-                pre_release: false,
-            },
-        )?;
+        let release = zed::github_release_by_tag_name(GITHUB_REPO, RELEASE_TAG)?;
 
         let asset = release
             .assets
