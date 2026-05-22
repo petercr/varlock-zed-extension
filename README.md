@@ -34,6 +34,16 @@ This workspace also includes a vendored LSP runtime in `server/node_modules` so 
 In Zed, install this folder as a dev extension.
 
 Open a `.env.schema` file and confirm the language mode is `Varlock Schema`.
+If Zed keeps opening `.env.schema` files as `Shell Script`, add this file type
+override to your Zed `settings.json`:
+
+```json
+{
+  "file_types": {
+    "Varlock Schema": [".env.schema", "*.env.schema"]
+  }
+}
+```
 
 ## Publishing
 
