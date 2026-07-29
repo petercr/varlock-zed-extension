@@ -3,8 +3,8 @@
 // release asset that the Zed extension downloads at runtime.
 //
 // Usage:
-//   node scripts/release.mjs            # tag = v<extension.toml version>
-//   node scripts/release.mjs 0.1.1      # explicit version (bumps all version pins)
+//   bun run scripts/release.mjs            # tag = v<extension.toml version>
+//   bun run scripts/release.mjs 0.1.1      # explicit version (bumps all version pins)
 //
 // Requires: gh CLI authenticated, repo `petercr/varlock-zed-extension` to exist.
 
@@ -24,7 +24,6 @@ const cargoTomlPath = join(root, 'Cargo.toml');
 const cargoLockPath = join(root, 'Cargo.lock');
 const rustPath = join(root, 'src', 'lib.rs');
 const pkgPath = join(serverDir, 'package.json');
-const lockPath = join(serverDir, 'package-lock.json');
 
 function run(cmd, opts = {}) {
   const r = spawnSync(cmd, { shell: true, stdio: 'inherit', cwd: root, ...opts });
@@ -92,11 +91,6 @@ function writeExtensionVersion(version) {
 function writeServerPackageVersion(pkg, version) {
   pkg.version = version;
   writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-
-  const lock = JSON.parse(readFileSync(lockPath, 'utf8'));
-  lock.version = version;
-  if (lock.packages?.['']) lock.packages[''].version = version;
-  writeFileSync(lockPath, JSON.stringify(lock, null, 2) + '\n');
 }
 
 function writeRustVersions(version) {
@@ -133,7 +127,7 @@ if (pkg.version !== version) {
   console.error(
     `\nERROR version mismatch: extension.toml is ${version}, server/package.json is ${pkg.version}`,
   );
-  console.error('  Run: node scripts/release.mjs <version>');
+  console.error('  Run: bun run scripts/release.mjs <version>');
   process.exit(1);
 }
 
@@ -143,7 +137,7 @@ if (cargoVersion !== version) {
   console.error(
     `\nERROR version mismatch: extension.toml is ${version}, Cargo.toml is ${cargoVersion}`,
   );
-  console.error('  Run: node scripts/release.mjs <version>');
+  console.error('  Run: bun run scripts/release.mjs <version>');
   process.exit(1);
 }
 
@@ -152,7 +146,7 @@ if (cargoLockVersion !== version) {
   console.error(
     `\nERROR version mismatch: extension.toml is ${version}, Cargo.lock is ${cargoLockVersion}`,
   );
-  console.error('  Run: node scripts/release.mjs <version>');
+  console.error('  Run: bun run scripts/release.mjs <version>');
   process.exit(1);
 }
 
@@ -161,12 +155,12 @@ if (releaseTag !== tag) {
   console.error(
     `\nERROR version mismatch: extension.toml is ${version}, src/lib.rs uses ${releaseTag}`,
   );
-  console.error('  Run: node scripts/release.mjs <version>');
+  console.error('  Run: bun run scripts/release.mjs <version>');
   process.exit(1);
 }
 
 console.log(`* building bundled language server (${tag})`);
-run('npm --prefix server run build');
+run('bun run --cwd server build');
 
 const stageDir = mkdtempSync(join(tmpdir(), 'envspec-release-'));
 const assetPath = join(stageDir, ASSET_NAME);

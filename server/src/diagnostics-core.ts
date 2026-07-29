@@ -21,7 +21,6 @@ function extractRegexPattern(value: unknown): string | undefined {
   if (wrapped) return wrapped[1];
   return value;
 }
-
 export type TypeInfo = {
   name: string;
   args: Array<string>;
@@ -215,13 +214,16 @@ export function getDecoratorOccurrences(lineText: string, lineNumber: number) {
   for (const match of decoratorComment.matchAll(DECORATOR_PATTERN)) {
     const name = match[1];
     const start = decoratorCommentStart + (match.index ?? 0);
-    const suffix = match[0].slice(name.length + 1);
+    // Prefer text after `@name` over the regex capture: DECORATOR_PATTERN only
+    // matches a closed `(...)` on the same line, so multiline `@initFoo(` would
+    // otherwise look like a bare (non-repeatable) decorator.
+    const afterName = decoratorComment.slice((match.index ?? 0) + name.length + 1);
     occurrences.push({
       name,
       line: lineNumber,
       start,
       end: start + match[0].length,
-      isFunctionCall: suffix.startsWith('('),
+      isFunctionCall: afterName.startsWith('('),
     });
   }
 

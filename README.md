@@ -25,11 +25,9 @@ Zed port of the Varlock VS Code `@env-spec` extension for `.env.schema` files.
 Install dependencies and rebuild the server from `server/`:
 
 ```sh
-npm install
-npm run build
+bun install
+bun run build
 ```
-
-This workspace also includes a vendored LSP runtime in `server/node_modules` so the extension can be launched locally on this machine even though the local WSL `npm` executable is currently broken.
 
 In Zed, install this folder as a dev extension.
 
@@ -54,7 +52,7 @@ contains `tree-sitter-varlock-schema/`:
 ```sh
 git add tree-sitter-varlock-schema
 git commit -m "Add Varlock schema tree-sitter grammar"
-node scripts/pin-grammar.mjs
+bun run scripts/pin-grammar.mjs
 git add extension.toml
 git commit -m "Pin Varlock schema grammar"
 ```
@@ -63,7 +61,7 @@ Then publish the bundled language-server release asset. The release tag must
 match `extension.toml` and `src/lib.rs`:
 
 ```sh
-node scripts/release.mjs
+bun run scripts/release.mjs
 ```
 
 In the `zed-industries/extensions` PR, use the same version from
