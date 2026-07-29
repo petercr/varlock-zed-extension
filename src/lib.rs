@@ -6,7 +6,7 @@ use zed_extension_api::{
 /// GitHub repo that hosts the bundled language-server release asset.
 const GITHUB_REPO: &str = "petercr/varlock-zed-extension";
 /// Release tag that contains the bundled language-server asset for this extension version.
-const RELEASE_TAG: &str = "v0.1.3";
+const RELEASE_TAG: &str = "v0.1.4";
 /// Name of the release asset (a single, dependency-free CJS bundle).
 const ASSET_NAME: &str = "env-spec-language-server.js";
 /// Local development build, used when this folder is installed as a dev extension.

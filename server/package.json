@@ -1,6 +1,6 @@
 {
   "name": "varlock-env-spec-language-server",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "type": "commonjs",
   "description": "Varlock @env-spec language server for .env.schema files (bundled, shipped via GitHub release)",
