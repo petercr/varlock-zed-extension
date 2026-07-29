@@ -12,7 +12,6 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { tmpdir } from 'node:os';
 
 const REPO = 'petercr/varlock-zed-extension';
 const ASSET_NAME = 'env-spec-language-server.js';
@@ -162,7 +161,9 @@ if (releaseTag !== tag) {
 console.log(`* building bundled language server (${tag})`);
 run('bun run --cwd server build');
 
-const stageDir = mkdtempSync(join(tmpdir(), 'envspec-release-'));
+// Keep the staged asset under the repository so sandboxed gh installations
+// (notably Snap) can access it during upload.
+const stageDir = mkdtempSync(join(serverDir, 'out', '.release-'));
 const assetPath = join(stageDir, ASSET_NAME);
 copyFileSync(join(serverDir, 'out', 'server.js'), assetPath);
 
